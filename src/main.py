@@ -1,6 +1,5 @@
 import os
-from functions import *
-
+import functions
 """
     +   Uma simples função para limpar o terminal e gerar o header do programa.
 """
@@ -72,11 +71,11 @@ def search():
         case 1:
             header()
             nomeJogador = input('Digite o nome do jogador: ')
-            searchPlayer(nomeJogador)
+            functions.searchPlayer(nomeJogador)
         case 2:
             header()
             nomeClube = input('Digite o nome do clube: ')
-            searchTeam(nomeClube)
+            functions.searchTeam(nomeClube)
         case 3:
             # opcaoPosicao = -1
 
@@ -109,7 +108,7 @@ def search():
             #     exit()
 
             opcaoPosicao = int(input('\nDigite a posição: '))
-            searchByPosition(opcaoPosicao)
+            functions.searchByPosition(opcaoPosicao)
         case 4:
             opcaoStatus = -1
 
@@ -136,7 +135,29 @@ def search():
             header()
             inicioIntervalo = int(input('\nDigite o início do intervalo: '))
             fimIntervalo = int(input('\nDigite o fim do intervalo: '))
-            searchStatusByRange(opcaoStatus, inicioIntervalo, fimIntervalo)
+            
+            error = True
+
+            if inicioIntervalo >= fimIntervalo:
+                print('Erro: O início do intervalo deve ser menor que o fim do intervalo!')
+            elif inicioIntervalo < 0:
+                print('Erro: O início do intervalo deve ser maior ou igual à 0.')
+            elif fimIntervalo > 100:
+                print('Erro: O fim do intervalo deve ser menor ou igual à 100.')
+            else:
+                functions.searchStatusByRange(opcaoStatus, inicioIntervalo, fimIntervalo)
+                error = False
+            
+            if error:
+                opcao = 0
+
+                while(opcao != 1):
+                    opcao = int(input('\nDigite 1 para voltar: '))
+                
+                if opcao == 1:
+                    search()
+
+            search()
         case 5:
             mainMenu()
         case 6:
@@ -160,9 +181,9 @@ def group():
 
     match opcao:
         case 1:
-            groupTeams()
+            functions.groupTeams()
         case 2:
-            groupPositions()
+            functions.groupPositions()
         case 3:
             mainMenu()
         case 4:
@@ -199,9 +220,9 @@ def sortData():
 
     match opcao:
         case 1:
-            sortPlayerNames(opcaoOrdem)
+            functions.sortPlayerNames(opcaoOrdem)
         case 2:
-            sortTeamNames(opcaoOrdem)
+            functions.sortTeamNames(opcaoOrdem)
         case 3:
             opcaoStatus = -1
 
@@ -225,7 +246,7 @@ def sortData():
             elif opcaoStatus == 9:
                 exit()
 
-            sortPlayerStatus(opcaoStatus, opcaoOrdem)
+            functions.sortPlayerStatus(opcaoStatus, opcaoOrdem)
         case 4:
             mainMenu()
         case 5:

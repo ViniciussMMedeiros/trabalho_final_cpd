@@ -1,4 +1,7 @@
+from ast import match_case
 from listedData import *
+from prettytable import PrettyTable # python -m pip install -U prettytable
+# from main import header, mainMenu
 
 """
     searchPlayer: nome do jogador (string) -> string
@@ -31,8 +34,58 @@ def searchByPosition(posicao):
     status (int): 1 - Overall | 2 - Pace | 3 - Shooting | 4 - Passing | 5 - Dribbling | 6 - Defending | 7 - Physical
 """
 def searchStatusByRange(status, inicioIntervalo, fimIntervalo):
-    pass
+    match status:
+        case 1:
+            statusData = overall[:]
+        case 2:
+            statusData = pace[:]
+        case 3:
+            statusData = shooting[:]
+        case 4:
+            statusData = passing[:]
+        case 5:
+            statusData = dribbling[:]
+        case 6:
+            statusData = defending[:]
+        case 7:
+            statusData = physical[:]
 
+    originalIndexes = insertionSort(statusData)
+    
+    validValue = False
+
+    while True:
+        ans = binarySearch(statusData, 0, len(statusData) - 1, inicioIntervalo)
+
+        if ans != -1:
+            validValue = True
+            break
+        
+        inicioIntervalo += 1
+
+        if inicioIntervalo >= fimIntervalo:
+            break
+    
+    if validValue:
+        table = PrettyTable(['PLAYER', 'CLUB', 'POSITION', 'OVERALL', 'PACE', 'SHOOTING', 'PASSING', 'DRIBBLING', 'DEFENDING', 'PHYSICAL'])
+        for i in range(ans, len(statusData)):
+            if statusData[i] > fimIntervalo:
+                break
+            index = originalIndexes[i]
+            table.add_row([playerNames[index], clubs[index], position[index], overall[index], pace[index], shooting[index], passing[index], dribbling[index], defending[index], physical[index]])
+
+        print(table)
+
+        opcao = 0
+        while opcao != 1:
+            opcao = int(input('\n\nDigite 1 para continuar: '))
+    
+    else:
+        opcao = 0
+        while opcao != 1:
+            print('\nNenhum jogador encontrado com o status desejado dentro do intervalo informado.')
+            opcao = int(input('\n\nDigite 1 para continuar: '))
+        
 """
     groupTeams -> _ -> lista
     A lista possuirá todos os dados, agrupando as informações considerando o nome do clube.
@@ -81,3 +134,39 @@ def sortTeamNames(ordem):
 """
 def sortPlayerStatus(status, ordem):
     pass
+
+"""
+    Faz o ordenamento de arr inplace, retornando um array que relaciona os elementos ordenados aos seus índices originais
+"""
+def insertionSort(arr):
+    indexes = [0]
+    
+    for j in range(1, len(arr)):
+        indexes.append(j)
+        key = arr[j]
+        i = j - 1
+        while i >= 0 and arr[i] > key:
+            arr[i+1] = arr[i]
+            indexes[i+1] = indexes[i]
+            i -= 1
+        arr[i+1] = key
+        indexes[i+1] = j
+
+    return indexes
+
+def binarySearch(statusData, left, right, value):
+    if right >= left:
+ 
+        middle = (right + left) // 2
+ 
+        if statusData[middle] == value:
+            return middle
+
+        elif statusData[middle] > value:
+            return binarySearch(statusData, left, middle - 1, value)
+
+        else:
+            return binarySearch(statusData, middle + 1, right, value)
+ 
+    else:
+        return -1

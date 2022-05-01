@@ -34,6 +34,8 @@ def searchByPosition(posicao):
     status (int): 1 - Overall | 2 - Pace | 3 - Shooting | 4 - Passing | 5 - Dribbling | 6 - Defending | 7 - Physical
 """
 def searchStatusByRange(status, inicioIntervalo, fimIntervalo):
+    # Copia os valores (não apenas umas referência) para a variável statusData todo o conteúdo do respectivo status selecionado pelo usuário 
+    # (faz isso para o ordenamento não afetar a lista original)
     match status:
         case 1:
             statusData = overall[:]
@@ -50,36 +52,57 @@ def searchStatusByRange(status, inicioIntervalo, fimIntervalo):
         case 7:
             statusData = physical[:]
 
-    originalIndexes = insertionSort(statusData)
+    originalIndexes = insertionSort(statusData)         # Ordena os dados do status escolhido, neste momento statusData estará ordenado e os índices originais correspondentes estarão em originalIndexes
+    # Exemplo:
+    # Lista original -> [4, 3, 2, 1], seus índices são claramente [0, 1, 2, 3]
+    # Após ordenamento -> [1, 2, 3, 4], originalIndexes guardará os valores originais dos índices -> [3, 2, 1, 0]. Assim sabe-se que o valor 1 encontrava-se no índice 3 dos dados originais, por exemplo.
     
-    validValue = False
+    validValue = False  # Variável de controle para indicar quando a busca binária abaixo encontrou um valor ou não (-1)
 
     while True:
+        # Faz a busca binária sobre o statusData (lembrando: já está ordenado), com o limite da esquerda sendo 0, o da direita o fim da lista e o valor procurando sendo o inicio do intervalo
+        # Ou seja, faz uma busca binária para indicar (se existir) onde está o valor de inicio do intervalo indicado pelo usuário
         ans = binarySearch(statusData, 0, len(statusData) - 1, inicioIntervalo)
 
-        if ans != -1:
-            validValue = True
-            break
+        if ans != -1:   # Se não for -1, então a busca binária conseguiu encontrar o valor na lista
+            validValue = True   # Atualiza a flag
+            break   # Sai do laço (while true)
         
-        inicioIntervalo += 1
+        inicioIntervalo += 1    # Caso não tenha conseguido encontrar o valor (tenha sido -1), então soma 1 ao valor do início do intervalo.
+        # Exemplo:
+        # O usuário quer o valor 26 como início do intervalo, mas esse valor não existe dentro do status especificado, então nós vamos incrementando até encontrar um valor que existe
+        # Sempre considerando que esse valor não pode ultrapassar o fim do intervalo que o usuário quer (condicional abaixo)
+        # Ex: início 26, fim 32
+        # Faz busca binária procurando por 26, 27, 28, 29, 30, 31 --> Se encontrar qualquer um desses, guarda a sua posição, se não encontrar então não há correspondências para os valores desejados
 
         if inicioIntervalo >= fimIntervalo:
             break
     
+    # Aqui estamos fora do laço, se caiu aqui ou encontrou o valor válido e deu break, ou não encontrou e deu break porque o valor de início do intervalo bateu no valor de fim do intervalo
     if validValue:
+        # Cria uma 'PrettyTable' com todas as colunas do csv original para servir como header (colunas) da tabela
         table = PrettyTable(['PLAYER', 'CLUB', 'POSITION', 'OVERALL', 'PACE', 'SHOOTING', 'PASSING', 'DRIBBLING', 'DEFENDING', 'PHYSICAL'])
+        # Então, o laço abaixo percorrerá os índices do statusData ordenado anteriormente. 
+    
         for i in range(ans, len(statusData)):
+            # Funcionamento: Parte do índice encontrado para o início do intervalo no laço while true acima. Então, para cada um desses índices, procura no originalIndexes o índice
+            # real correspondente ao dado ordenado dentro do ordenamento original do csv.
             if statusData[i] > fimIntervalo:
-                break
+                break   # Para apenas quando chegar ao fim do intervalo de valores que o usuário desejava
             index = originalIndexes[i]
+            # Cria uma linha na tabela contendo os dados (em ordem, correspondendo aos dados usados para as colunas acima). Observar que os dados são acessados usando 'index', ou seja, o índice original dentro da lista correspondente ao CSV.
             table.add_row([playerNames[index], clubs[index], position[index], overall[index], pace[index], shooting[index], passing[index], dribbling[index], defending[index], physical[index]])
 
+        # Por fim, imprime o resultado da busca para o usuário, usando a table (PrettyTable) criada no laço acima
         print(table)
 
+        # Mantém a tela (o resultado obtido), enquanto o usuário interagir para continuar.
         opcao = 0
         while opcao != 1:
             opcao = int(input('\n\nDigite 1 para continuar: '))
     
+    # Caso contrário, a busca binária não conseguiu encontrar um início de intervalo válido nos dados, logo a busca do usuário não retornou resultados válidos.
+    # Mantém essa tela de interação para deixar claro para o usuário que a sua busca foi inválida, aguarda por interação.
     else:
         opcao = 0
         while opcao != 1:
@@ -136,24 +159,55 @@ def sortPlayerStatus(status, ordem):
     pass
 
 """
-    Faz o ordenamento de arr inplace, retornando um array que relaciona os elementos ordenados aos seus índices originais
+    Faz o ordenamento de arr localmente, retornando uma lista que relaciona os elementos ordenados aos seus índices originais
+    Exemplo de funcionamento: [] -> key |||| * --> ponteiro esquerda (i)
+    
+    Arr			        Indices originais
+    [1, 5, 4, 3, 2]		[0]
+    [1, [5], 4, 3, 2]	[0, 1]
+    [1*, [5], 4, 3, 2]	[0, 1]
+    [1, 5*, [4], 3, 2]	[0, 1, 2]
+    [1, 5, 5, 3, 2]		[0, 1, 1]		-> Key = 4
+    [1*, 5, 5, 3, 2]	[0, 1, 1]		-> Key = 4
+    [1, 4, 5, 3, 2]		[0, 2, 1]
+    [1, 4, 5*, [3], 2]	[0, 2, 1, 3]
+    [1, 4*, 5, 5, 2]	[0, 2, 1, 1]		-> Key = 3
+    [1, 4, 4, 5, 2]		[0, 2, 2, 1]		-> Key = 3
+    [1, 3, 4, 5, 2]		[0, 3, 2, 1]
+    [1, 3, 4, 5*, [2]]	[0, 3, 2, 1, 4]
+    [1, 3, 4, 5*, 5]	[0, 3, 2, 1, 1]		-> Key = 2
+    [1, 3, 4*, 5, 5]	[0, 3, 2, 1, 1]		-> Key = 2
+    [1, 3, 4*, 4, 5]	[0, 3, 2, 2, 1]		-> Key = 2
+    [1, 3*, 4, 4, 5]	[0, 3, 2, 2, 1]		-> Key = 2
+    [1, 3*, 3, 4, 5]	[0, 3, 3, 2, 1]		-> Key = 2
+    [1*, 3, 3, 4, 5]	[0, 3, 3, 2, 1]		-> Key = 2
+    [1, 2, 3, 4, 5]		[0, 4, 3, 2, 1]
+    Dados ordenados ->		    [1, 2, 3, 4, 5]
+    Seus índices originais ->	[0, 4, 3, 2, 1]
 """
 def insertionSort(arr):
-    indexes = [0]
+    originalIndexes = [0]   # array para guardar os índices originais dos dados ordenados
     
-    for j in range(1, len(arr)):
-        indexes.append(j)
-        key = arr[j]
-        i = j - 1
-        while i >= 0 and arr[i] > key:
-            arr[i+1] = arr[i]
-            indexes[i+1] = indexes[i]
-            i -= 1
+    for index in range(1, len(arr)):    # percorre todos os índices dentro do array, começando por 1
+        originalIndexes.append(index)           # salva o índice atual no array de índices originais
+        key = arr[index]                        # Faz a lógica do insertion sort, mantem o elemento atual como a key
+        i = index - 1                           # Cria um ponteiro 'i' auxiliar para ir percorrendo para a esquerda a partir da key
+        
+        while i >= 0 and arr[i] > key:          # Enquanto o ponteiro não tiver chegado no início dos dados, e o valor para o qual aponta for maior do que a key, continua
+            arr[i+1] = arr[i]                   # Copia o valor da esquerda para a direita
+            originalIndexes[i+1] = originalIndexes[i] # No array de índices originais, copia o valor do índice da esquerda para a direita
+            i -= 1                              # Decrementa o ponteiro da esquerda
+        
+        # quando sair do laço (ponteiro menor que o limite da esquerda ou valor da key menor que o valor encontrado), coloca de volta a key para a posição a direita do ponteiro
         arr[i+1] = key
-        indexes[i+1] = j
+        # faz a mesma coisa para o valor do índice
+        originalIndexes[i+1] = index
 
-    return indexes
+    return originalIndexes
 
+# Busca binária tradicional (feita de forma recursiva), usando uma variável (statusData) que guarda um dos status dos jogadores de forma ordenada, limites de 
+# esquerda e direita (que por padrão são chamados como 0 e o len - 1 da lista) e o valor a ser procurado.
+# Se encontar o valor, retorna seu índice. Se não encontrar, retorna -1.
 def binarySearch(statusData, left, right, value):
     if right >= left:
  

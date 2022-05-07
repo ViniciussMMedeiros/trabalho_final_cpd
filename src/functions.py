@@ -23,9 +23,18 @@ def searchTeam(nomeClube):
     searchByPosition: posicao -> lista
     A lista possuirá todas as ocorrências de jogadores com a posição desejada.
 """
-def searchByPosition(posicao):
-    pass
+def searchByPosition(posicaoNum):
+    posList = ['RB', 'ST', 'CB', 'GK', 'CM', 'CDM', 'LB', 'RM', 'RW', 'LM', 'SS', 'CAM', 'LWB', 'RWB', 'LW']
 
+    posicao = posList[posicaoNum - 1]
+
+    table = PrettyTable(['PLAYER', 'CLUB', 'POSITION', 'OVERALL', 'PACE', 'SHOOTING', 'PASSING', 'DRIBBLING', 'DEFENDING', 'PHYSICAL'])
+
+    for i in range(len(dictPosicoes[posicao])):
+        index = dictPosicoes[posicao][i]
+        table.add_row([playerNames[index], clubs[index], position[index], overall[index], pace[index], shooting[index], passing[index], dribbling[index], defending[index], physical[index]])
+
+    print(table)
 """
     searchStatusByRange -> status, início do intervalo, fim do intervalo -> lista ou string
     Se encontrar jogadores com os valores desejados, retorna uma lista contendo todos esses jogadores, com seus respectivos status e nomes de clube.
@@ -52,7 +61,7 @@ def searchStatusByRange(status, inicioIntervalo, fimIntervalo):
         case 7:
             statusData = physical[:]
 
-    originalIndexes = insertionSort(statusData)         # Ordena os dados do status escolhido, neste momento statusData estará ordenado e os índices originais correspondentes estarão em originalIndexes
+    originalIndexes = insertionSort(statusData)         # Ordena os dados do status escolhido, neste momento statusData estará ordenado e os índices originais correspondentes estarão em originalIndexes    
     # Exemplo:
     # Lista original -> [4, 3, 2, 1], seus índices são claramente [0, 1, 2, 3]
     # Após ordenamento -> [1, 2, 3, 4], originalIndexes guardará os valores originais dos índices -> [3, 2, 1, 0]. Assim sabe-se que o valor 1 encontrava-se no índice 3 dos dados originais, por exemplo.
@@ -224,3 +233,37 @@ def binarySearch(statusData, left, right, value):
  
     else:
         return -1
+
+# def radixSortMSB(array, i):
+#     # arr.sort()
+
+#     if len(array) <= 1:
+#         return array
+
+#     # divide (first by length, then by order of the first character)
+#     done_bucket = []
+#     buckets = [ [] for x in range(64,100) ] # ASCII TABLE A-Z is from 64 to 90
+
+#     for s in array:
+#         if i >= len(s):
+#             done_bucket.append(s)
+#         else:
+#             buckets[ ord(s[i]) - ord('a') ].append(s)
+
+#     # ***********conquer (recursively sort buckets)***********
+#     buckets = [ radixSortMSB (b, i + 1) for b in buckets ]
+
+#     return done_bucket + [ b for blist in buckets for b in blist ]
+ 
+def ordenaPosicoes(posicoes):
+    global dictPosicoes
+    dictPosicoes = {}
+
+    global posicoesOrdenadas
+
+    for i in range(len(position)):
+        pos = position[i]
+        if not (pos in dictPosicoes):
+            dictPosicoes[pos] = [i]
+            continue
+        dictPosicoes[pos].append(i)

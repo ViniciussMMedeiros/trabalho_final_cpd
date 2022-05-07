@@ -1,5 +1,7 @@
 import os
 import functions
+from listedData import *
+
 """
     +   Uma simples função para limpar o terminal e gerar o header do programa.
 """
@@ -77,38 +79,32 @@ def search():
             nomeClube = input('Digite o nome do clube: ')
             functions.searchTeam(nomeClube)
         case 3:
-            # opcaoPosicao = -1
+            opcaoPosicao = -1
 
-            # while(opcaoPosicao < 1 or opcaoPosicao > 9):
-            #     header()
-            #     print('\n### Pesquisando por status dos jogadores ###\n')
-            #     print('\n1 - RB')
-            #     print('\n2 - ST')
-            #     print('\n3 - CB')
-            #     print('\n4 - GK')
-            #     print('\n5 - CM')
-            #     print('\n6 - CDM')
-            #     print('\n7 - LB')
-            #     print('\n8 - RM')
-            #     print('\n9 - RW')
-            #     print('\n10 - LM')
-            #     print('\n11 - SS')
-            #     print('\n12 - CAM')
-            #     print('\n13 - LWB')
-            #     print('\n14 - RWB')
-            #     print('\n15 - LW')
-            #     print('\n8 - Voltar ao menu')
-            #     print('\n9 - Sair')
+            while(opcaoPosicao < 0 or opcaoPosicao > 16):
+                header()
+                print('\n### Pesquisando por status dos jogadores ###\n')
+                print('\n1 - RB | 2 - ST | 3 - CB | 4 - GK | 5 - CM | 6 - CDM | 7 - LB | 8 - RM | 9 - RW | 10 - LM | 11 - SS | 12 - CAM | 13 - LWB | 14 - RWB | 15 - LW')
+                print('\n0 - Voltar')
 
-            #     opcaoPosicao = int(input('\nDigite a opção: '))
+                opcaoPosicao = int(input('\nDigite a opção: '))
 
-            # if opcaoPosicao == 8:
-            #     mainMenu()
-            # elif opcaoPosicao == 9:
-            #     exit()
+            if opcaoPosicao == 0:
+                search()
+            elif opcaoPosicao == 16:
+                exit()
 
-            opcaoPosicao = int(input('\nDigite a posição: '))
+            functions.ordenaPosicoes(position)
+            header()
             functions.searchByPosition(opcaoPosicao)
+
+            opcao = 0
+
+            while(opcao != 1):
+                opcao = int(input('\nDigite 1 para voltar: '))
+            
+            if opcao == 1:
+                search()
         case 4:
             opcaoStatus = -1
 
@@ -122,13 +118,13 @@ def search():
                 print('\n5 - Dribbling')
                 print('\n6 - Defending')
                 print('\n7 - Physical')
-                print('\n8 - Voltar ao menu')
+                print('\n8 - Voltar')
                 print('\n9 - Sair')
 
                 opcaoStatus = int(input('\nDigite a opção: '))
 
             if opcaoStatus == 8:
-                mainMenu()
+                search()
             elif opcaoStatus == 9:
                 exit()
 
@@ -236,13 +232,13 @@ def sortData():
                 print('\n5 - Dribbling')
                 print('\n6 - Defending')
                 print('\n7 - Physical')
-                print('\n8 - Voltar ao menu')
+                print('\n8 - Voltar')
                 print('\n9 - Sair')
 
                 opcaoStatus = int(input('\nDigite a opção: '))
 
             if opcaoStatus == 8:
-                mainMenu()
+                sortData()
             elif opcaoStatus == 9:
                 exit()
 

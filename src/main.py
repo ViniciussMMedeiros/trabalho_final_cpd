@@ -74,10 +74,12 @@ def search():
             header()
             nomeJogador = input('Digite o nome do jogador: ')
             functions.searchPlayer(nomeJogador)
+            search()
         case 2:
             header()
             nomeClube = input('Digite o nome do clube: ')
             functions.searchTeam(nomeClube)
+            search()
         case 3:
             opcaoPosicao = -1
 
@@ -94,17 +96,11 @@ def search():
             elif opcaoPosicao == 16:
                 exit()
 
-            functions.ordenaPosicoes(position)
+            functions.dictIndicesPosicoes()
+
             header()
             functions.searchByPosition(opcaoPosicao)
-
-            opcao = 0
-
-            while(opcao != 1):
-                opcao = int(input('\nDigite 1 para voltar: '))
-            
-            if opcao == 1:
-                search()
+            search()
         case 4:
             opcaoStatus = -1
 
@@ -177,9 +173,14 @@ def group():
 
     match opcao:
         case 1:
+            header()
             functions.groupTeams()
+            group()
         case 2:
+            header()
+            functions.dictIndicesPosicoes()
             functions.groupPositions()
+            group()
         case 3:
             mainMenu()
         case 4:
@@ -216,9 +217,13 @@ def sortData():
 
     match opcao:
         case 1:
+            header()
             functions.sortPlayerNames(opcaoOrdem)
+            sortData()
         case 2:
+            header()
             functions.sortTeamNames(opcaoOrdem)
+            sortData()
         case 3:
             opcaoStatus = -1
 
@@ -242,7 +247,9 @@ def sortData():
             elif opcaoStatus == 9:
                 exit()
 
+            header()
             functions.sortPlayerStatus(opcaoStatus, opcaoOrdem)
+            sortData()
         case 4:
             mainMenu()
         case 5:

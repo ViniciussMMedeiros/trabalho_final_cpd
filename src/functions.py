@@ -35,6 +35,11 @@ def searchByPosition(posicaoNum):
         table.add_row([playerNames[index], clubs[index], position[index], overall[index], pace[index], shooting[index], passing[index], dribbling[index], defending[index], physical[index]])
 
     print(table)
+
+    opcao = 0
+
+    while(opcao != 1):
+        opcao = int(input('\nDigite 1 para voltar: '))
 """
     searchStatusByRange -> status, início do intervalo, fim do intervalo -> lista ou string
     Se encontrar jogadores com os valores desejados, retorna uma lista contendo todos esses jogadores, com seus respectivos status e nomes de clube.
@@ -125,7 +130,21 @@ def searchStatusByRange(status, inicioIntervalo, fimIntervalo):
     ** Todo: implementar agrupamentos por ordem crescente / decrescente alfabética.
 """
 def groupTeams():
-    pass
+    createArrayValuesIndexes(clubs)
+    sortedClubs = radixSortMSBValuesIndexes(arrValuesIndexes, 0)
+    
+    table = PrettyTable(['PLAYER', 'CLUB', 'POSITION', 'OVERALL', 'PACE', 'SHOOTING', 'PASSING', 'DRIBBLING', 'DEFENDING', 'PHYSICAL'])
+
+    for i in range(len(sortedClubs)):
+        index = sortedClubs[i][1]
+        table.add_row([playerNames[index], clubs[index], position[index], overall[index], pace[index], shooting[index], passing[index], dribbling[index], defending[index], physical[index]])
+
+    print(table)   
+
+    opcao = 0
+
+    while(opcao != 1):
+        opcao = int(input('\nDigite 1 para voltar: '))
 
 """
     groupPositions -> _ -> lista
@@ -134,7 +153,21 @@ def groupTeams():
     ** Todo: implementar agrupamentos por ordem crescente / decrescente alfabética.
 """
 def groupPositions():
-    pass
+    opcao = 0
+    
+    posList = ['RB', 'ST', 'CB', 'GK', 'CM', 'CDM', 'LB', 'RM', 'RW', 'LM', 'SS', 'CAM', 'LWB', 'RWB', 'LW']
+
+    table = PrettyTable(['PLAYER', 'CLUB', 'POSITION', 'OVERALL', 'PACE', 'SHOOTING', 'PASSING', 'DRIBBLING', 'DEFENDING', 'PHYSICAL'])
+
+    for posicao in posList:
+        for i in range(len(dictPosicoes[posicao])):
+            index = dictPosicoes[posicao][i]
+            table.add_row([playerNames[index], clubs[index], position[index], overall[index], pace[index], shooting[index], passing[index], dribbling[index], defending[index], physical[index]])
+
+    print(table)
+
+    while(opcao != 1):
+        opcao = int(input('\nDigite 1 para voltar: '))
 
 """
     sortPlayerNames -> ordem -> lista
@@ -144,7 +177,26 @@ def groupPositions():
     ordem(int): 1 - Crescente | 2 - Decrescente
 """
 def sortPlayerNames(ordem):
-    pass
+    createArrayValuesIndexes(playerNames)
+
+    sortedNames = radixSortMSBValuesIndexes(arrValuesIndexes, 0)
+    
+    if ordem == 2:
+        descendingFromAscendingOrdered(sortedNames)
+        sortedNames = descendingArr
+
+    table = PrettyTable(['PLAYER', 'CLUB', 'POSITION', 'OVERALL', 'PACE', 'SHOOTING', 'PASSING', 'DRIBBLING', 'DEFENDING', 'PHYSICAL'])
+
+    for i in range(len(sortedNames)):
+        index = sortedNames[i][1]
+        table.add_row([playerNames[index], clubs[index], position[index], overall[index], pace[index], shooting[index], passing[index], dribbling[index], defending[index], physical[index]])
+
+    print(table)   
+
+    opcao = 0
+
+    while(opcao != 1):
+        opcao = int(input('\nDigite 1 para voltar: '))
 
 """
     sortTeamNames -> ordem -> lista
@@ -154,7 +206,26 @@ def sortPlayerNames(ordem):
     ordem(int): 1 - Crescente | 2 - Decrescente
 """
 def sortTeamNames(ordem):
-    pass
+    createArrayValuesIndexes(clubs)
+
+    sortedClubs = radixSortMSBValuesIndexes(arrValuesIndexes, 0)
+    
+    if ordem == 2:
+        descendingFromAscendingOrdered(sortedClubs)
+        sortedClubs = descendingArr        
+
+    table = PrettyTable(['PLAYER', 'CLUB', 'POSITION', 'OVERALL', 'PACE', 'SHOOTING', 'PASSING', 'DRIBBLING', 'DEFENDING', 'PHYSICAL'])
+
+    for i in range(len(sortedClubs)):
+        index = sortedClubs[i][1]
+        table.add_row([playerNames[index], clubs[index], position[index], overall[index], pace[index], shooting[index], passing[index], dribbling[index], defending[index], physical[index]])
+
+    print(table)   
+
+    opcao = 0
+
+    while(opcao != 1):
+        opcao = int(input('\nDigite 1 para voltar: '))
 
 """
     sortPlayerStatus -> status, ordem -> lista
@@ -165,7 +236,40 @@ def sortTeamNames(ordem):
     ordem(int): 1 - Crescente | 2 - Decrescente
 """
 def sortPlayerStatus(status, ordem):
-    pass
+    match status:
+        case 1:
+            statusData = overall[:]
+        case 2:
+            statusData = pace[:]
+        case 3:
+            statusData = shooting[:]
+        case 4:
+            statusData = passing[:]
+        case 5:
+            statusData = dribbling[:]
+        case 6:
+            statusData = defending[:]
+        case 7:
+            statusData = physical[:]
+
+    originalIndexes = insertionSort(statusData)         # Ordena os dados do status escolhido, neste momento statusData estará ordenado e os índices originais correspondentes estarão em originalIndexes   
+    
+    if ordem == 2:
+        descendingFromAscendingOrdered(originalIndexes)
+        originalIndexes = descendingArr
+
+    table = PrettyTable(['PLAYER', 'CLUB', 'POSITION', 'OVERALL', 'PACE', 'SHOOTING', 'PASSING', 'DRIBBLING', 'DEFENDING', 'PHYSICAL'])
+
+    for i in range(len(statusData)):
+        index = originalIndexes[i]
+        table.add_row([playerNames[index], clubs[index], position[index], overall[index], pace[index], shooting[index], passing[index], dribbling[index], defending[index], physical[index]])
+
+    print(table)
+
+    opcao = 0
+
+    while(opcao != 1):
+        opcao = int(input('\nDigite 1 para voltar: '))
 
 """
     Faz o ordenamento de arr localmente, retornando uma lista que relaciona os elementos ordenados aos seus índices originais
@@ -255,11 +359,9 @@ def binarySearch(statusData, left, right, value):
 
 #     return done_bucket + [ b for blist in buckets for b in blist ]
  
-def ordenaPosicoes(posicoes):
+def dictIndicesPosicoes():
     global dictPosicoes
     dictPosicoes = {}
-
-    global posicoesOrdenadas
 
     for i in range(len(position)):
         pos = position[i]
@@ -267,3 +369,38 @@ def ordenaPosicoes(posicoes):
             dictPosicoes[pos] = [i]
             continue
         dictPosicoes[pos].append(i)
+
+def createArrayValuesIndexes(arr): # [['value': index], ['value2', index2]]
+    global arrValuesIndexes
+    arrValuesIndexes = [None] * len(arr)
+
+    for i in range(len(arr)):
+        arrValuesIndexes[i] = [arr[i], i]
+
+def radixSortMSBValuesIndexes(array, i):
+    if len(array) <= 1:
+        return array
+
+    done_bucket = []
+    # buckets = [ [] for x in range(5,145) ]
+    buckets = [ [] for x in range(0,381) ]
+
+    for el in array:
+        if i >= len(el[0]):
+            done_bucket.append(el)
+        else:
+            # if 0 <= ord(el[0][i]) - ord('a') < len(buckets):
+                
+            buckets[ ord(el[0][i]) - ord('a') ].append(el)
+
+    buckets = [ radixSortMSBValuesIndexes (b, i + 1) for b in buckets ]
+
+    return done_bucket + [ b for blist in buckets for b in blist ]
+
+def descendingFromAscendingOrdered(arr):
+    global descendingArr
+
+    descendingArr = []
+
+    for i in range(len(arr) - 1, -1, -1):
+        descendingArr.append(arr[i]) 

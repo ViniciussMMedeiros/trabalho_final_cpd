@@ -2,7 +2,8 @@
 # from listedData import *
 import pickle
 from prettytable import PrettyTable # python -m pip install -U prettytable
-from listedData import Trie
+# from listedData import Trie
+from trieData import Trie
 # from main import header, mainMenu
 
 """
@@ -316,6 +317,7 @@ def sortPlayerStatus(status, ordem):
         opcao = int(input('\nDigite 1 para voltar: '))
 
 def addPlayer(playerNameValue, clubName, positionName, overallValue, paceValue, shootingValue, passingValue, dribblingValue, defendingValue, physicalValue):
+    # loadPkl()
     nameAdd = playerNameValue + '@' + str(len(playerNames))
 
     playerNames.append(playerNameValue)
@@ -329,14 +331,17 @@ def addPlayer(playerNameValue, clubName, positionName, overallValue, paceValue, 
     defending.append(defendingValue)
     physical.append(physicalValue)
 
-    # print(len(playerName))
-
     triePlayerNames.add(nameAdd)
 
     updatePkl()
     loadPkl()
 
-    print(playerNames)
+    # print(playerNames)
+
+    # with open('./src/dataFiles/playerNames.pkl', 'rb') as f:
+    #     playersTest = pickle.load(f)
+
+    # print(playersTest)
 
     opcao = 0
 
@@ -458,8 +463,19 @@ def descendingFromAscendingOrdered(arr):
 
 def loadPkl():
     global triePlayerNames, playerNames, clubs, position, overall, pace, shooting, passing, dribbling, defending, physical
-    triePlayerNames = Trie()
+    # playerNames = []
+    # clubs = []
+    # position = []
+    # overall = []
+    # pace = []
+    # shooting = []
+    # passing = []
+    # dribbling = []
+    # defending = []
+    # physical = []
 
+    triePlayerNames = Trie()
+    
     with open('./src/dataFiles/triePlayerNames.pkl', 'rb') as f:
         triePlayerNames = pickle.load(f)
     with open('./src/dataFiles/playerNames.pkl', 'rb') as f:
@@ -482,29 +498,32 @@ def loadPkl():
         defending = pickle.load(f)
     with open('./src/dataFiles/physical.pkl', 'rb') as f:
         physical = pickle.load(f)
+    
+    print('loadPkl -->', playerNames)
 
 loadPkl()
 
 def updatePkl():
+    print('updatePkl -->', playerNames)
     with open('./src/dataFiles/triePlayerNames.pkl', 'wb') as f:
-        pickle.dump(triePlayerNames, f)
+        pickle.dump(triePlayerNames, f, protocol=pickle.HIGHEST_PROTOCOL)
     with open('./src/dataFiles/playerNames.pkl', 'wb') as f:
-        pickle.dump(playerNames, f)
+        pickle.dump(playerNames, f, protocol=pickle.HIGHEST_PROTOCOL)
     with open('./src/dataFiles/clubs.pkl', 'wb') as f:
-        pickle.dump(clubs, f)
+        pickle.dump(clubs, f, protocol=pickle.HIGHEST_PROTOCOL)
     with open('./src/dataFiles/position.pkl', 'wb') as f:
-        pickle.dump(position, f)
+        pickle.dump(position, f, protocol=pickle.HIGHEST_PROTOCOL)
     with open('./src/dataFiles/overall.pkl', 'wb') as f:
-        pickle.dump(overall, f)
+        pickle.dump(overall, f, protocol=pickle.HIGHEST_PROTOCOL)
     with open('./src/dataFiles/pace.pkl', 'wb') as f:
-        pickle.dump(pace, f)
+        pickle.dump(pace, f, protocol=pickle.HIGHEST_PROTOCOL)
     with open('./src/dataFiles/shooting.pkl', 'wb') as f:
-        pickle.dump(shooting, f)
+        pickle.dump(shooting, f, protocol=pickle.HIGHEST_PROTOCOL)
     with open('./src/dataFiles/passing.pkl', 'wb') as f:
-        pickle.dump(passing, f)
+        pickle.dump(passing, f, protocol=pickle.HIGHEST_PROTOCOL)
     with open('./src/dataFiles/dribbling.pkl', 'wb') as f:
-        pickle.dump(dribbling, f)
+        pickle.dump(dribbling, f, protocol=pickle.HIGHEST_PROTOCOL)
     with open('./src/dataFiles/defending.pkl', 'wb') as f:
-        pickle.dump(defending, f)
+        pickle.dump(defending, f, protocol=pickle.HIGHEST_PROTOCOL)
     with open('./src/dataFiles/physical.pkl', 'wb') as f:
-        pickle.dump(physical, f)
+        pickle.dump(physical, f, protocol=pickle.HIGHEST_PROTOCOL)

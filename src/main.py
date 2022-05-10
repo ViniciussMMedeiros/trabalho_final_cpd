@@ -342,7 +342,6 @@ def statusIsValid(value):
 
         addRemovePlayer()
 
-
 """
     +   Chamada da função mainMenu para inicializar a interação do usuário com o menu principal.
 """

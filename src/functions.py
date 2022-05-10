@@ -35,6 +35,7 @@ def searchByPosition(posicaoNum):
         table.add_row([playerNames[index], clubs[index], position[index], overall[index], pace[index], shooting[index], passing[index], dribbling[index], defending[index], physical[index]])
 
     print(table)
+    # print(dictPosicoes)
 
     opcao = 0
 
@@ -157,13 +158,15 @@ def groupPositions():
     
     posList = ['RB', 'ST', 'CB', 'GK', 'CM', 'CDM', 'LB', 'RM', 'RW', 'LM', 'SS', 'CAM', 'LWB', 'RWB', 'LW']
 
-    table = PrettyTable(['PLAYER', 'CLUB', 'POSITION', 'OVERALL', 'PACE', 'SHOOTING', 'PASSING', 'DRIBBLING', 'DEFENDING', 'PHYSICAL'])
+    table = PrettyTable(['I', 'PLAYER', 'CLUB', 'POSITION', 'OVERALL', 'PACE', 'SHOOTING', 'PASSING', 'DRIBBLING', 'DEFENDING', 'PHYSICAL'])
 
+    ind = 1
     for posicao in posList:
         for i in range(len(dictPosicoes[posicao])):
             index = dictPosicoes[posicao][i]
-            table.add_row([playerNames[index], clubs[index], position[index], overall[index], pace[index], shooting[index], passing[index], dribbling[index], defending[index], physical[index]])
-
+            table.add_row([ind, playerNames[index], clubs[index], position[index], overall[index], pace[index], shooting[index], passing[index], dribbling[index], defending[index], physical[index]])
+            # print(table)
+            ind += 1
     print(table)
 
     while(opcao != 1):
@@ -337,27 +340,6 @@ def binarySearch(statusData, left, right, value):
  
     else:
         return -1
-
-# def radixSortMSB(array, i):
-#     # arr.sort()
-
-#     if len(array) <= 1:
-#         return array
-
-#     # divide (first by length, then by order of the first character)
-#     done_bucket = []
-#     buckets = [ [] for x in range(64,100) ] # ASCII TABLE A-Z is from 64 to 90
-
-#     for s in array:
-#         if i >= len(s):
-#             done_bucket.append(s)
-#         else:
-#             buckets[ ord(s[i]) - ord('a') ].append(s)
-
-#     # ***********conquer (recursively sort buckets)***********
-#     buckets = [ radixSortMSB (b, i + 1) for b in buckets ]
-
-#     return done_bucket + [ b for blist in buckets for b in blist ]
  
 def dictIndicesPosicoes():
     global dictPosicoes
@@ -382,15 +364,12 @@ def radixSortMSBValuesIndexes(array, i):
         return array
 
     done_bucket = []
-    # buckets = [ [] for x in range(5,145) ]
     buckets = [ [] for x in range(0,381) ]
 
     for el in array:
         if i >= len(el[0]):
             done_bucket.append(el)
-        else:
-            # if 0 <= ord(el[0][i]) - ord('a') < len(buckets):
-                
+        else:   
             buckets[ ord(el[0][i]) - ord('a') ].append(el)
 
     buckets = [ radixSortMSBValuesIndexes (b, i + 1) for b in buckets ]

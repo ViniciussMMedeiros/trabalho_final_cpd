@@ -1,6 +1,5 @@
 import os
 import functions
-from listedData import *
 
 """
     +   Uma simples função para limpar o terminal e gerar o header do programa.

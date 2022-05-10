@@ -1,6 +1,8 @@
-from ast import match_case
-from listedData import *
+# from ast import match_case
+# from listedData import *
+import pickle
 from prettytable import PrettyTable # python -m pip install -U prettytable
+from listedData import Trie
 # from main import header, mainMenu
 
 """
@@ -9,7 +11,25 @@ from prettytable import PrettyTable # python -m pip install -U prettytable
     Se o jogador não for encontrado: 'Jogador não encontrado.'
 """
 def searchPlayer(nomeJogador):
-    pass
+    result = triePlayerNames.search(nomeJogador)
+
+    # print(playerNames[index])
+
+    if result:
+        index = int(result)
+    
+        table = PrettyTable(['PLAYER', 'CLUB', 'POSITION', 'OVERALL', 'PACE', 'SHOOTING', 'PASSING', 'DRIBBLING', 'DEFENDING', 'PHYSICAL'])
+
+        table.add_row([playerNames[index], clubs[index], position[index], overall[index], pace[index], shooting[index], passing[index], dribbling[index], defending[index], physical[index]])
+        
+        print(table)
+    else:
+        print('Jogador não encontrado!')
+
+    opcao = 0
+
+    while(opcao != 1):
+        opcao = int(input('\nDigite 1 para voltar: '))
 
 """
     searchTeam: nome do clube (string) -> lista ou string
@@ -17,25 +37,41 @@ def searchPlayer(nomeJogador):
     Se o clube não for encontrado: 'Clube não encontrado.'
 """
 def searchTeam(nomeClube):
-    pass
+    dictIndexesValues(clubs)
+
+    table = PrettyTable(['PLAYER', 'CLUB', 'POSITION', 'OVERALL', 'PACE', 'SHOOTING', 'PASSING', 'DRIBBLING', 'DEFENDING', 'PHYSICAL'])
+
+    if dictIndexes.get(nomeClube):
+        for i in range(len(dictIndexes[nomeClube])):
+            index = dictIndexes[nomeClube][i]
+            table.add_row([playerNames[index], clubs[index], position[index], overall[index], pace[index], shooting[index], passing[index], dribbling[index], defending[index], physical[index]])
+
+        print(table)
+    else:
+        print('Clube não encontrado!')
+
+    opcao = 0
+
+    while(opcao != 1):
+        opcao = int(input('\nDigite 1 para voltar: '))
 
 """
     searchByPosition: posicao -> lista
     A lista possuirá todas as ocorrências de jogadores com a posição desejada.
 """
 def searchByPosition(posicaoNum):
+    dictIndexesValues(position)
     posList = ['RB', 'ST', 'CB', 'GK', 'CM', 'CDM', 'LB', 'RM', 'RW', 'LM', 'SS', 'CAM', 'LWB', 'RWB', 'LW']
 
     posicao = posList[posicaoNum - 1]
 
     table = PrettyTable(['PLAYER', 'CLUB', 'POSITION', 'OVERALL', 'PACE', 'SHOOTING', 'PASSING', 'DRIBBLING', 'DEFENDING', 'PHYSICAL'])
 
-    for i in range(len(dictPosicoes[posicao])):
-        index = dictPosicoes[posicao][i]
+    for i in range(len(dictIndexes[posicao])):
+        index = dictIndexes[posicao][i]
         table.add_row([playerNames[index], clubs[index], position[index], overall[index], pace[index], shooting[index], passing[index], dribbling[index], defending[index], physical[index]])
 
     print(table)
-    # print(dictPosicoes)
 
     opcao = 0
 
@@ -154,6 +190,7 @@ def groupTeams():
     ** Todo: implementar agrupamentos por ordem crescente / decrescente alfabética.
 """
 def groupPositions():
+    dictIndexesValues(position)
     opcao = 0
     
     posList = ['RB', 'ST', 'CB', 'GK', 'CM', 'CDM', 'LB', 'RM', 'RW', 'LM', 'SS', 'CAM', 'LWB', 'RWB', 'LW']
@@ -162,8 +199,8 @@ def groupPositions():
 
     ind = 1
     for posicao in posList:
-        for i in range(len(dictPosicoes[posicao])):
-            index = dictPosicoes[posicao][i]
+        for i in range(len(dictIndexes[posicao])):
+            index = dictIndexes[posicao][i]
             table.add_row([ind, playerNames[index], clubs[index], position[index], overall[index], pace[index], shooting[index], passing[index], dribbling[index], defending[index], physical[index]])
             # print(table)
             ind += 1
@@ -219,11 +256,15 @@ def sortTeamNames(ordem):
 
     table = PrettyTable(['PLAYER', 'CLUB', 'POSITION', 'OVERALL', 'PACE', 'SHOOTING', 'PASSING', 'DRIBBLING', 'DEFENDING', 'PHYSICAL'])
 
+
+    # sum = 0
     for i in range(len(sortedClubs)):
         index = sortedClubs[i][1]
         table.add_row([playerNames[index], clubs[index], position[index], overall[index], pace[index], shooting[index], passing[index], dribbling[index], defending[index], physical[index]])
+        # sum += 1
 
     print(table)   
+    # print(sum)
 
     opcao = 0
 
@@ -273,6 +314,37 @@ def sortPlayerStatus(status, ordem):
 
     while(opcao != 1):
         opcao = int(input('\nDigite 1 para voltar: '))
+
+def addPlayer(playerNameValue, clubName, positionName, overallValue, paceValue, shootingValue, passingValue, dribblingValue, defendingValue, physicalValue):
+    nameAdd = playerNameValue + '@' + str(len(playerNames))
+
+    playerNames.append(playerNameValue)
+    clubs.append(clubName)
+    position.append(positionName)
+    overall.append(overallValue)
+    shooting.append(shootingValue)
+    pace.append(paceValue)
+    passing.append(passingValue)
+    dribbling.append(dribblingValue)
+    defending.append(defendingValue)
+    physical.append(physicalValue)
+
+    # print(len(playerName))
+
+    triePlayerNames.add(nameAdd)
+
+    updatePkl()
+    loadPkl()
+
+    print(playerNames)
+
+    opcao = 0
+
+    while(opcao != 1):
+        opcao = int(input('\nDigite 1 para voltar: '))
+
+def removePlayer():
+    pass
 
 """
     Faz o ordenamento de arr localmente, retornando uma lista que relaciona os elementos ordenados aos seus índices originais
@@ -341,16 +413,16 @@ def binarySearch(statusData, left, right, value):
     else:
         return -1
  
-def dictIndicesPosicoes():
-    global dictPosicoes
-    dictPosicoes = {}
+def dictIndexesValues(arr):
+    global dictIndexes
+    dictIndexes = {}
 
-    for i in range(len(position)):
-        pos = position[i]
-        if not (pos in dictPosicoes):
-            dictPosicoes[pos] = [i]
+    for i in range(len(arr)):
+        pos = arr[i]
+        if not (pos in dictIndexes):
+            dictIndexes[pos] = [i]
             continue
-        dictPosicoes[pos].append(i)
+        dictIndexes[pos].append(i)
 
 def createArrayValuesIndexes(arr): # [['value': index], ['value2', index2]]
     global arrValuesIndexes
@@ -383,3 +455,56 @@ def descendingFromAscendingOrdered(arr):
 
     for i in range(len(arr) - 1, -1, -1):
         descendingArr.append(arr[i]) 
+
+def loadPkl():
+    global triePlayerNames, playerNames, clubs, position, overall, pace, shooting, passing, dribbling, defending, physical
+    triePlayerNames = Trie()
+
+    with open('./src/dataFiles/triePlayerNames.pkl', 'rb') as f:
+        triePlayerNames = pickle.load(f)
+    with open('./src/dataFiles/playerNames.pkl', 'rb') as f:
+        playerNames = pickle.load(f)
+    with open('./src/dataFiles/clubs.pkl', 'rb') as f:
+        clubs = pickle.load(f)
+    with open('./src/dataFiles/position.pkl', 'rb') as f:
+        position = pickle.load(f)
+    with open('./src/dataFiles/overall.pkl', 'rb') as f:
+        overall = pickle.load(f)
+    with open('./src/dataFiles/pace.pkl', 'rb') as f:
+        pace = pickle.load(f)
+    with open('./src/dataFiles/shooting.pkl', 'rb') as f:
+        shooting = pickle.load(f)
+    with open('./src/dataFiles/passing.pkl', 'rb') as f:
+        passing = pickle.load(f)
+    with open('./src/dataFiles/dribbling.pkl', 'rb') as f:
+        dribbling = pickle.load(f)
+    with open('./src/dataFiles/defending.pkl', 'rb') as f:
+        defending = pickle.load(f)
+    with open('./src/dataFiles/physical.pkl', 'rb') as f:
+        physical = pickle.load(f)
+
+loadPkl()
+
+def updatePkl():
+    with open('./src/dataFiles/triePlayerNames.pkl', 'wb') as f:
+        pickle.dump(triePlayerNames, f)
+    with open('./src/dataFiles/playerNames.pkl', 'wb') as f:
+        pickle.dump(playerNames, f)
+    with open('./src/dataFiles/clubs.pkl', 'wb') as f:
+        pickle.dump(clubs, f)
+    with open('./src/dataFiles/position.pkl', 'wb') as f:
+        pickle.dump(position, f)
+    with open('./src/dataFiles/overall.pkl', 'wb') as f:
+        pickle.dump(overall, f)
+    with open('./src/dataFiles/pace.pkl', 'wb') as f:
+        pickle.dump(pace, f)
+    with open('./src/dataFiles/shooting.pkl', 'wb') as f:
+        pickle.dump(shooting, f)
+    with open('./src/dataFiles/passing.pkl', 'wb') as f:
+        pickle.dump(passing, f)
+    with open('./src/dataFiles/dribbling.pkl', 'wb') as f:
+        pickle.dump(dribbling, f)
+    with open('./src/dataFiles/defending.pkl', 'wb') as f:
+        pickle.dump(defending, f)
+    with open('./src/dataFiles/physical.pkl', 'wb') as f:
+        pickle.dump(physical, f)

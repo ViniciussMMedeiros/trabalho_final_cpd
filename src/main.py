@@ -31,12 +31,13 @@ def exit():
 def mainMenu():
     opcao = -1
 
-    while(opcao < 1 or opcao > 4):
+    while(opcao < 1 or opcao > 5):
         header()
         print('\n1 - Pesquisar')
         print('\n2 - Agrupar')
         print('\n3 - Ordenar')
-        print('\n4 - Sair')
+        print('\n4 - Adicionar/Remover jogador')
+        print('\n5 - Sair')
 
         opcao = int(input('\nDigite a opção: '))
 
@@ -48,6 +49,8 @@ def mainMenu():
         case 3:
             sortData()
         case 4:
+            addRemovePlayer()
+        case 5:
             exit()
 
 """
@@ -95,7 +98,7 @@ def search():
             elif opcaoPosicao == 16:
                 exit()
 
-            functions.dictIndicesPosicoes()
+            # functions.dictIndicesPosicoes()
 
             header()
             functions.searchByPosition(opcaoPosicao)
@@ -177,7 +180,7 @@ def group():
             group()
         case 2:
             header()
-            functions.dictIndicesPosicoes()
+            # functions.dictIndicesPosicoes()
             functions.groupPositions()
             group()
         case 3:
@@ -253,6 +256,92 @@ def sortData():
             mainMenu()
         case 5:
             exit()
+
+def addRemovePlayer():
+    opcao = -1
+
+    while(opcao < 1 or opcao > 4):
+        header()
+        print('\n### Ordenar ###\n')
+        print('\n1 - Adicionar jogador')
+        print('\n2 - Remover jogador')
+        print('\n3 - Voltar ao menu')
+        print('\n4 - Sair')
+
+        opcao = int(input('\nDigite a opção: '))
+
+
+    match opcao:
+        case 1:
+            validPositions = ['RB', 'ST', 'CB', 'GK', 'CM', 'CDM', 'LB', 'RM', 'RW', 'LM', 'SS', 'CAM', 'LWB', 'RWB', 'LW']
+
+            header()
+            playerName = input('Digite o nome do jogador: ')
+            
+            header()
+            clubName = input('Digite o nome do clube: ')
+            
+            header()
+            positionName = input('Digite a posição: ')
+            if(positionName.upper() not in validPositions):
+                print('A posição informada é inválida!')
+                opcao = 0
+
+                while(opcao != 1):
+                    opcao = int(input('\nDigite 1 para voltar: '))
+
+                addRemovePlayer()
+            
+            header()
+            overall = int(input('Digite o valor do overall: '))
+            statusIsValid(overall)
+            
+            header()
+            pace = int(input('Digite o valor do pace: '))
+            statusIsValid(pace)
+            
+            header()
+            shooting = int(input('Digite o valor do shooting: '))
+            statusIsValid(shooting)
+            
+            header()
+            passing = int(input('Digite o valor do passing: '))
+            statusIsValid(passing)
+
+            header()
+            dribbling = int(input('Digite o valor do dribbling: '))
+            statusIsValid(dribbling)
+            
+            header()
+            defending = int(input('Digite o valor do defending: '))
+            statusIsValid(defending)
+
+            header()
+            physical = int(input('Digite o valor do physical: '))
+            statusIsValid(physical)
+
+            functions.addPlayer(playerName, clubName, positionName, overall, pace, shooting, passing, dribbling, defending, physical)
+            addRemovePlayer()
+        case 2:
+            header()
+            functions.removePlayer()
+            addRemovePlayer()
+        case 3:
+            mainMenu()
+        case 4:
+            exit()
+
+def statusIsValid(value):
+    if value < 0 or value > 100:
+        print('O valor informado é inválido! Deve ser maior ou igual a 0 e menor ou igual a 100')
+
+        opcao = 0
+
+        while(opcao != 1):
+            opcao = int(input('\nDigite 1 para voltar: '))
+
+        addRemovePlayer()
+
 
 """
     +   Chamada da função mainMenu para inicializar a interação do usuário com o menu principal.

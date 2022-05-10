@@ -6,50 +6,95 @@ data = pd.read_csv("./src/data.csv")
 playerNamesData = pd.DataFrame(data, columns=['PLAYER'])
 playerNames = [i[0] for i in playerNamesData.values.tolist()]
 
-with open('playerNames.pkl', 'wb') as f:
+with open('./src/dataFiles/playerNames.pkl', 'wb') as f:
     pickle.dump(playerNames, f)
 
 clubsData = pd.DataFrame(data, columns=['CLUB'])
 clubs = [i[0] for i in clubsData.values.tolist()]
-with open('clubs.pkl', 'wb') as f:
+with open('./src/dataFiles/clubs.pkl', 'wb') as f:
     pickle.dump(clubs, f)
 
 positionData = pd.DataFrame(data, columns=['POS'])
 position = [i[0] for i in positionData.values.tolist()]
-with open('position.pkl', 'wb') as f:
+with open('./src/dataFiles/position.pkl', 'wb') as f:
     pickle.dump(position, f)
 
 overallData = pd.DataFrame(data, columns=['OVR'])
 overall = [i[0] for i in overallData.values.tolist()]
-with open('overall.pkl', 'wb') as f:
+with open('./src/dataFiles/overall.pkl', 'wb') as f:
     pickle.dump(overall, f)
 
 paceData = pd.DataFrame(data, columns=['PAC'])
 pace = [i[0] for i in paceData.values.tolist()]
-with open('pace.pkl', 'wb') as f:
+with open('./src/dataFiles/pace.pkl', 'wb') as f:
     pickle.dump(pace, f)
 
 shootingData = pd.DataFrame(data, columns=['SHO'])
 shooting = [i[0] for i in shootingData.values.tolist()]
-with open('shooting.pkl', 'wb') as f:
+with open('./src/dataFiles/shooting.pkl', 'wb') as f:
     pickle.dump(shooting, f)
 
 passingData = pd.DataFrame(data, columns=['PAS'])
 passing = [i[0] for i in passingData.values.tolist()]
-with open('passing.pkl', 'wb') as f:
+with open('./src/dataFiles/passing.pkl', 'wb') as f:
     pickle.dump(passing, f)
 
 dribblingData = pd.DataFrame(data, columns=['DRI'])
 dribbling = [i[0] for i in dribblingData.values.tolist()]
-with open('dribbling.pkl', 'wb') as f:
+with open('./src/dataFiles/dribbling.pkl', 'wb') as f:
     pickle.dump(dribbling, f)
 
 defendingData = pd.DataFrame(data, columns=['DEF'])
 defending = [i[0] for i in defendingData.values.tolist()]
-with open('defending.pkl', 'wb') as f:
+with open('./src/dataFiles/defending.pkl', 'wb') as f:
     pickle.dump(defending, f)
 
 physicalData = pd.DataFrame(data, columns=['PHY'])
 physical = [i[0] for i in physicalData.values.tolist()]
-with open('physical.pkl', 'wb') as f:
+with open('./src/dataFiles/physical.pkl', 'wb') as f:
     pickle.dump(physical, f)
+
+class Trie:
+    head = {}
+
+    def add(self, word):
+        flagEscreveuMarcacao = False
+        cur = self.head
+        for ch in word:
+            if flagEscreveuMarcacao:
+                cur['*'].append(ch)
+                continue
+            if ch == '@':
+                flagEscreveuMarcacao = True
+                cur['*'] = []
+                continue
+            if ch not in cur:
+                cur[ch] = {}
+
+            cur = cur[ch]
+
+    def search(self, word):
+        cur = self.head
+        for ch in word:
+            if ch not in cur:
+                return False
+            cur = cur[ch]
+
+        if '*' in cur:
+            index = ''.join(cur['*'])
+            return index
+        else:
+            return False
+
+dictTriePlayerNames = Trie()
+
+for i in range(len(playerNames)):
+    nameWithIndex = '' + playerNames[i] + '@' + str(i)
+    
+    dictTriePlayerNames.add(nameWithIndex)
+
+with open('./src/dataFiles/triePlayerNames.pkl', 'wb') as f:
+    pickle.dump(dictTriePlayerNames, f)
+
+# dictTriePlayerNames.add("hi@1234567")
+# print(dictTriePlayerNames.search("hi"))

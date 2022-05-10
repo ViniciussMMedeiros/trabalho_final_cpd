@@ -53,6 +53,3 @@ physicalData = pd.DataFrame(data, columns=['PHY'])
 physical = [i[0] for i in physicalData.values.tolist()]
 with open('./src/dataFiles/physical.pkl', 'wb') as f:
     pickle.dump(physical, f)
-
-# dictTriePlayerNames.add("hi@1234567")
-# print(dictTriePlayerNames.search("hi"))

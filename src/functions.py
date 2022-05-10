@@ -1,10 +1,6 @@
-# from ast import match_case
-# from listedData import *
 import pickle
 from prettytable import PrettyTable # python -m pip install -U prettytable
-# from listedData import Trie
 from trieData import Trie
-# from main import header, mainMenu
 
 """
     searchPlayer: nome do jogador (string) -> string
@@ -14,9 +10,7 @@ from trieData import Trie
 def searchPlayer(nomeJogador):
     result = triePlayerNames.search(nomeJogador)
 
-    # print(playerNames[index])
-
-    if result:
+    if result and result != 'x':
         index = int(result)
     
         table = PrettyTable(['PLAYER', 'CLUB', 'POSITION', 'OVERALL', 'PACE', 'SHOOTING', 'PASSING', 'DRIBBLING', 'DEFENDING', 'PHYSICAL'])
@@ -162,7 +156,7 @@ def searchStatusByRange(status, inicioIntervalo, fimIntervalo):
             opcao = int(input('\n\nDigite 1 para continuar: '))
         
 """
-    groupTeams -> _ -> lista
+    groupTeams -> lista
     A lista possuirá todos os dados, agrupando as informações considerando o nome do clube.
     ** O agrupamento ocorrerá considerando as primeiras ocorrências de cada nome. 
     ** Todo: implementar agrupamentos por ordem crescente / decrescente alfabética.
@@ -185,7 +179,7 @@ def groupTeams():
         opcao = int(input('\nDigite 1 para voltar: '))
 
 """
-    groupPositions -> _ -> lista
+    groupPositions -> lista
     A lista possuirá todos os dados, agrupando as informações considerando o nome da posição.
     ** O agrupamento ocorrerá considerando as primeiras ocorrências de cada nome. 
     ** Todo: implementar agrupamentos por ordem crescente / decrescente alfabética.
@@ -257,15 +251,11 @@ def sortTeamNames(ordem):
 
     table = PrettyTable(['PLAYER', 'CLUB', 'POSITION', 'OVERALL', 'PACE', 'SHOOTING', 'PASSING', 'DRIBBLING', 'DEFENDING', 'PHYSICAL'])
 
-
-    # sum = 0
     for i in range(len(sortedClubs)):
         index = sortedClubs[i][1]
         table.add_row([playerNames[index], clubs[index], position[index], overall[index], pace[index], shooting[index], passing[index], dribbling[index], defending[index], physical[index]])
-        # sum += 1
 
-    print(table)   
-    # print(sum)
+    print(table)
 
     opcao = 0
 
@@ -316,8 +306,14 @@ def sortPlayerStatus(status, ordem):
     while(opcao != 1):
         opcao = int(input('\nDigite 1 para voltar: '))
 
+"""
+    addPlayer: Função para adicionar jogador com os dados informados pelo usuário. Adiciona o novo nome na árvore e faz o append das informações
+    às listas de informações para persistência nos arquivos binários.
+"""
+
 def addPlayer(playerNameValue, clubName, positionName, overallValue, paceValue, shootingValue, passingValue, dribblingValue, defendingValue, physicalValue):
-    # loadPkl()
+    triePlayerNames = Trie()
+
     nameAdd = playerNameValue + '@' + str(len(playerNames))
 
     playerNames.append(playerNameValue)
@@ -333,23 +329,47 @@ def addPlayer(playerNameValue, clubName, positionName, overallValue, paceValue, 
 
     triePlayerNames.add(nameAdd)
 
+    # (tentando) Efetuando persistência dos dados
     updatePkl()
     loadPkl()
-
-    # print(playerNames)
-
-    # with open('./src/dataFiles/playerNames.pkl', 'rb') as f:
-    #     playersTest = pickle.load(f)
-
-    # print(playersTest)
 
     opcao = 0
 
     while(opcao != 1):
         opcao = int(input('\nDigite 1 para voltar: '))
 
-def removePlayer():
-    pass
+"""
+    RemovePlayer: Função para remover um jogador utilizando o nome informado pelo usuário. A função valida se o jogador existe, se existir
+    ela atualiza suas informações na árvore para informar que ele está deletado (adicionando 'x' no lugar do índice) e então remove suas
+    informações de todas as listas (arquivos) contendo dados de jogadores.
+"""
+def removePlayer(nomeJogador):
+    jogador = triePlayerNames.search(nomeJogador)
+
+    if jogador:
+        index = int(jogador)
+        nameAdd = nomeJogador + '@' + 'x'
+        triePlayerNames.add(nameAdd)
+
+        del playerNames[index]
+        del clubs[index]
+        del position[index]
+        del overall[index]
+        del pace[index]
+        del shooting[index]
+        del passing[index]
+        del dribbling[index]
+        del defending[index]
+        del physical[index]
+
+        # Fazer persistência da remoção nos arquivos binários
+    else:
+        print('O jogador não existe!')
+    
+    opcao = 0
+
+    while(opcao != 1):
+        opcao = int(input('\nDigite 1 para voltar: '))
 
 """
     Faz o ordenamento de arr localmente, retornando uma lista que relaciona os elementos ordenados aos seus índices originais
@@ -458,53 +478,99 @@ def descendingFromAscendingOrdered(arr):
 
     descendingArr = []
 
+    # inverte o array que está ordenado de maneira crescente para obter um ordenamento decrescente
     for i in range(len(arr) - 1, -1, -1):
         descendingArr.append(arr[i]) 
 
+"""
+Funções para carregamento e salvamento nos arquivos binários
+"""
+
 def loadPkl():
     global triePlayerNames, playerNames, clubs, position, overall, pace, shooting, passing, dribbling, defending, physical
-    # playerNames = []
-    # clubs = []
-    # position = []
-    # overall = []
-    # pace = []
-    # shooting = []
-    # passing = []
-    # dribbling = []
-    # defending = []
-    # physical = []
+    playerNames = []
+    clubs = []
+    position = []
+    overall = []
+    pace = []
+    shooting = []
+    passing = []
+    dribbling = []
+    defending = []
+    physical = []
 
     triePlayerNames = Trie()
     
     with open('./src/dataFiles/triePlayerNames.pkl', 'rb') as f:
-        triePlayerNames = pickle.load(f)
+        try:
+            while True:
+                triePlayerNames = pickle.load(f)
+        except EOFError:
+                pass
     with open('./src/dataFiles/playerNames.pkl', 'rb') as f:
-        playerNames = pickle.load(f)
+        try:
+            while True:
+                playerNames = pickle.load(f)
+        except EOFError:
+                pass
     with open('./src/dataFiles/clubs.pkl', 'rb') as f:
-        clubs = pickle.load(f)
+        try:
+            while True:
+                clubs = pickle.load(f)
+        except EOFError:
+                pass
     with open('./src/dataFiles/position.pkl', 'rb') as f:
-        position = pickle.load(f)
+        try:
+            while True:
+                position = pickle.load(f)
+        except EOFError:
+                pass
     with open('./src/dataFiles/overall.pkl', 'rb') as f:
-        overall = pickle.load(f)
+        try:
+            while True:
+                overall = pickle.load(f)
+        except EOFError:
+                pass
     with open('./src/dataFiles/pace.pkl', 'rb') as f:
-        pace = pickle.load(f)
+        try:
+            while True:
+                pace = pickle.load(f)
+        except EOFError:
+                pass
     with open('./src/dataFiles/shooting.pkl', 'rb') as f:
-        shooting = pickle.load(f)
+        try:
+            while True:
+                shooting = pickle.load(f)
+        except EOFError:
+                pass
     with open('./src/dataFiles/passing.pkl', 'rb') as f:
-        passing = pickle.load(f)
+        try:
+            while True:
+                passing = pickle.load(f)
+        except EOFError:
+                pass
     with open('./src/dataFiles/dribbling.pkl', 'rb') as f:
-        dribbling = pickle.load(f)
+        try:
+            while True:
+                dribbling = pickle.load(f)
+        except EOFError:
+                pass
     with open('./src/dataFiles/defending.pkl', 'rb') as f:
-        defending = pickle.load(f)
+        try:
+            while True:
+                defending = pickle.load(f)
+        except EOFError:
+                pass
     with open('./src/dataFiles/physical.pkl', 'rb') as f:
-        physical = pickle.load(f)
-    
-    print('loadPkl -->', playerNames)
+        try:
+            while True:
+                physical = pickle.load(f)
+        except EOFError:
+                pass
 
 loadPkl()
 
 def updatePkl():
-    print('updatePkl -->', playerNames)
     with open('./src/dataFiles/triePlayerNames.pkl', 'wb') as f:
         pickle.dump(triePlayerNames, f, protocol=pickle.HIGHEST_PROTOCOL)
     with open('./src/dataFiles/playerNames.pkl', 'wb') as f:

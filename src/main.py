@@ -2,7 +2,7 @@ import os
 import functions
 
 """
-    +   Uma simples função para limpar o terminal e gerar o header do programa.
+    Uma simples função para limpar o terminal e gerar o header do programa.
 """
 def header():
     os.system('cls' if os.name == 'nt' else 'clear')
@@ -18,7 +18,7 @@ def header():
                                                                                                                                                         |___/               """)
 
 """
-    +   Uma simples função para encerrar a execução do programa.
+    Uma simples função para encerrar a execução do programa.
 """
 def exit():
     os.system('cls' if os.name == 'nt' else 'clear')
@@ -26,7 +26,7 @@ def exit():
     raise SystemExit
 
 """
-    +   Função para gerar o menu inicial, responsável por apresentar as principais (todas) as funcionalidades do programa.
+    Função para gerar o menu inicial, responsável por apresentar as principais (todas) as funcionalidades do programa.
 """
 def mainMenu():
     opcao = -1
@@ -54,7 +54,7 @@ def mainMenu():
             exit()
 
 """
-    +   Função para o menu da funcionalidade pesquisar, mostrando as possibilidades de pesquisa que o usuário pode utilizar.
+    Função para o menu da funcionalidade pesquisar, mostrando as possibilidades de pesquisa que o usuário pode utilizar.
 """
 def search():
     opcao = -1
@@ -97,8 +97,6 @@ def search():
                 search()
             elif opcaoPosicao == 16:
                 exit()
-
-            # functions.dictIndicesPosicoes()
 
             header()
             functions.searchByPosition(opcaoPosicao)
@@ -180,7 +178,6 @@ def group():
             group()
         case 2:
             header()
-            # functions.dictIndicesPosicoes()
             functions.groupPositions()
             group()
         case 3:
@@ -189,7 +186,7 @@ def group():
             exit()
 
 """
-    +   Função para o menu da funcionalidade ordenar, mostrando as possibilidades de ordenamento de dados que o usuário pode utilizar.
+    Função para o menu da funcionalidade ordenar, mostrando as possibilidades de ordenamento de dados que o usuário pode utilizar.
 """
 def sortData():
     opcao = -1
@@ -257,6 +254,9 @@ def sortData():
         case 5:
             exit()
 
+"""
+    Função para gerar o menu da funcionalidade de adicionar ou remover jogador
+"""
 def addRemovePlayer():
     opcao = -1
 
@@ -270,7 +270,6 @@ def addRemovePlayer():
 
         opcao = int(input('\nDigite a opção: '))
 
-
     match opcao:
         case 1:
             validPositions = ['RB', 'ST', 'CB', 'GK', 'CM', 'CDM', 'LB', 'RM', 'RW', 'LM', 'SS', 'CAM', 'LWB', 'RWB', 'LW']
@@ -282,8 +281,9 @@ def addRemovePlayer():
             clubName = input('Digite o nome do clube: ')
             
             header()
-            positionName = input('Digite a posição: ')
-            if(positionName.upper() not in validPositions):
+            positionName = input('Digite a posição: ').upper()
+
+            if(positionName not in validPositions):
                 print('A posição informada é inválida!')
                 opcao = 0
 
@@ -324,13 +324,17 @@ def addRemovePlayer():
             addRemovePlayer()
         case 2:
             header()
-            functions.removePlayer()
+            nomeJogador = input('Digite o nome do jogador a ser removido: ')
+            functions.removePlayer(nomeJogador)
             addRemovePlayer()
         case 3:
             mainMenu()
         case 4:
             exit()
 
+"""
+    Função para verificar se o valor de um status (0 à 100) informado pelo usuário para a criação de um jogador é válido.
+"""
 def statusIsValid(value):
     if value < 0 or value > 100:
         print('O valor informado é inválido! Deve ser maior ou igual a 0 e menor ou igual a 100')
@@ -343,6 +347,6 @@ def statusIsValid(value):
         addRemovePlayer()
 
 """
-    +   Chamada da função mainMenu para inicializar a interação do usuário com o menu principal.
+    Chamada da função mainMenu para inicializar a interação do usuário com o menu principal.
 """
 mainMenu()
